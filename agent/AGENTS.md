@@ -1,31 +1,46 @@
-# SN66 Patch Rules
+# SN66 Diff Match
 
-Your diff is scored by positional exact matching against another solver's patch.
-Each added or removed line is compared at the same index in the same file.
-One extra or misplaced changed line can zero out many later matches.
+Your patch is scored by positional exact matching against another solver's patch.
+Changed lines are compared at the same index in the same file.
+One extra, missing, or misplaced changed line can zero out many later matches.
+
+## Scoring mindset
+
+- Fully satisfy the task, but nothing beyond it.
+- Match the reference solver's likely operation: insert vs replace vs delete.
+- Prefer the most conventional local implementation, not the most clever one.
+- Every extra changed line is a liability.
 
 ## Task handling
 
-- Read the title, description, and every acceptance-criteria bullet before doing anything else.
-- Treat the acceptance criteria as the full checklist. Fully satisfy them, but do nothing beyond them.
-- If file locations are not obvious, use a narrow `bash` search such as `rg` with task-specific terms. Do not wander through unrelated files.
+1. Read the title, description, and every acceptance-criteria bullet before doing anything else.
+2. Build the exact checklist of required layers or files from those criteria.
+3. If paths are unclear, run one narrow `rg` search with task-specific terms. Do not wander.
+4. Read each target file in full before editing it.
+
+## Coverage discipline
+
+- Treat the acceptance criteria as the full checklist.
+- If the task clearly names multiple layers such as schema, views, seeds, controllers, UI, or docs, cover each required layer exactly once.
+- Do not stop after the first obvious file if later criteria still require adjacent wiring or reporting changes.
+- Do not add speculative sibling changes just because they seem nice.
 
 ## Edit workflow
 
 1. Identify the smallest set of files that clearly must change.
-2. Read each target file in full before editing it.
-3. Decide the exact operation for each edit before touching the file: insert, replace, or delete.
-4. Edit files in alphabetical path order and top-to-bottom within each file.
-5. Before stopping, mentally confirm that each acceptance criterion is covered and that no extra edits slipped in.
+2. Decide the exact operation for each edit before touching the file.
+3. Edit files in alphabetical path order and top-to-bottom within each file.
+4. Keep each edit local and minimal.
+5. Before stopping, mentally confirm every acceptance criterion is covered and no extra edits slipped in.
 6. Stop immediately. No summaries, no verification, no re-reading loop.
 
 ## Positional safety
 
-- Match the exact operation the reference would likely choose.
 - Never add or remove blank lines unless the task explicitly requires it.
 - Preserve indentation, quote style, semicolons, spacing, and surrounding whitespace exactly.
-- Do not reorder imports, code blocks, object keys, JSX props, comments, exports, or tests unless the task explicitly requires that reordering.
-- When updating messages, docs, or metadata, change only the smallest required text.
+- Do not reorder imports, object keys, JSX props, comments, exports, or tests unless the task explicitly requires it.
+- When updating text, docs, or metadata, change only the smallest required text.
+- Avoid broad search-and-replace edits that can shift many later lines.
 
 ## Implementation heuristics
 
@@ -33,7 +48,7 @@ One extra or misplaced changed line can zero out many later matches.
 - When two approaches are valid, choose the one with fewer changed lines.
 - Keep logic in place whenever possible. Avoid wrappers, renames, cleanup, and generalization.
 - Update imports, exports, and adjacent wiring only when the primary code change strictly requires it.
-- If the task clearly implies one directly related sibling edit, make that sibling edit and stop there.
+- Add adjacent lifecycle fields, indexes, audit tables, or helper structures only when the task or surrounding local pattern clearly requires them.
 
 ## Hard bans
 

@@ -1,11 +1,16 @@
 {
+  "transport": "sse",
+  "quietStartup": true,
+  "hideThinkingBlock": true,
   "compaction": {
-    "enabled": false
+    "enabled": true,
+    "reserveTokens": 12288,
+    "keepRecentTokens": 20000
   },
   "retry": {
     "enabled": true,
-    "maxRetries": 2,
-    "baseDelayMs": 1000,
-    "maxDelayMs": 15000
+    "maxRetries": 5,
+    "baseDelayMs": 1500,
+    "maxDelayMs": 30000
   }
 }
