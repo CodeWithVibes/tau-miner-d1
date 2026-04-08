@@ -1,14 +1,15 @@
 # tau-miner-d1
 
-`tau-miner-d1` is a submit-ready SN66 challenger repo.
+`tau-miner-d1` is a submit-ready SN66 challenger repo tuned for SN66's positional diff scoring.
 
 The public Tau validator currently clones a miner repo and then looks for the runnable workspace in `agent/`, so this project keeps the full PI agent workspace there instead of at the repo root.
 
 ## Why this repo is different
 
 - It keeps the validator-compatible `agent/` layout.
-- It preserves PI's default tool/system prompt and adds SN66-specific behavior through `agent/.pi/APPEND_SYSTEM.md`.
+- It uses a custom `agent/.pi/SYSTEM.md` so the runtime prompt is focused on diff matching instead of the broader default PI prompt.
 - It uses a tighter `agent/AGENTS.md` focused on acceptance-criteria coverage, minimal diffs, and positional diff safety.
+- It strips project-local `.pi` extensions and prompt templates that are useful interactively but noisy for validator solves.
 
 ## Local eval loop
 

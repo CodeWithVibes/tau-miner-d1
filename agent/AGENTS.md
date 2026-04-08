@@ -1,48 +1,44 @@
-# SN66 Challenger Instructions
+# SN66 Patch Rules
 
 Your diff is scored by positional exact matching against another solver's patch.
-Every added or removed line is compared at the same index in each file.
-One extra, missing, or misplaced changed line can shift the rest of the file and destroy later matches.
+Each added or removed line is compared at the same index in the same file.
+One extra or misplaced changed line can zero out many later matches.
 
-## Task format
+## Task handling
 
-The task contains:
+- Read the title, description, and every acceptance-criteria bullet before doing anything else.
+- Treat the acceptance criteria as the full checklist. Fully satisfy them, but do nothing beyond them.
+- If file locations are not obvious, use a narrow `bash` search such as `rg` with task-specific terms. Do not wander through unrelated files.
 
-- a title
-- a short description
-- acceptance criteria bullets
+## Edit workflow
 
-Treat the acceptance criteria as the authoritative checklist. The strongest patch is the smallest obvious change set that satisfies every criterion and nothing else.
+1. Identify the smallest set of files that clearly must change.
+2. Read each target file in full before editing it.
+3. Decide the exact operation for each edit before touching the file: insert, replace, or delete.
+4. Edit files in alphabetical path order and top-to-bottom within each file.
+5. Before stopping, mentally confirm that each acceptance criterion is covered and that no extra edits slipped in.
+6. Stop immediately. No summaries, no verification, no re-reading loop.
 
-## Workflow
+## Positional safety
 
-1. Read the title, description, and **all** acceptance criteria.
-2. Identify the smallest set of files that clearly must change.
-3. Read each target file **in full** before editing it.
-4. Decide the exact operation for each change before touching the file: insert, replace, or delete.
-5. Edit files in alphabetical path order and top-to-bottom within each file.
-6. After the last edit, do one mental coverage check against the acceptance criteria and stop. No summaries, no verification, no extra reads.
-
-## Positional diff discipline
-
-- Match the exact operation the reference would likely choose: replace vs insert vs delete.
-- Never add or remove blank lines unless the task clearly requires it.
+- Match the exact operation the reference would likely choose.
+- Never add or remove blank lines unless the task explicitly requires it.
 - Preserve indentation, quote style, semicolons, spacing, and surrounding whitespace exactly.
-- Do not reorder imports, code blocks, object keys, JSX props, comments, or tests unless the task explicitly requires that reorder.
-- When updating docs or messages, change only the smallest required words or values.
+- Do not reorder imports, code blocks, object keys, JSX props, comments, exports, or tests unless the task explicitly requires that reordering.
+- When updating messages, docs, or metadata, change only the smallest required text.
 
 ## Implementation heuristics
 
-- Prefer the closest existing local pattern over inventing a new helper or abstraction.
+- Prefer the closest existing local pattern over inventing a helper or abstraction.
 - When two approaches are valid, choose the one with fewer changed lines.
 - Keep logic in place whenever possible. Avoid wrappers, renames, cleanup, and generalization.
-- Update imports only when the code change strictly requires it.
-- If the task clearly implies a directly related sibling file must change, update only that directly impacted sibling file.
+- Update imports, exports, and adjacent wiring only when the primary code change strictly requires it.
+- If the task clearly implies one directly related sibling edit, make that sibling edit and stop there.
 
 ## Hard bans
 
 - Do not run tests, builds, linters, or type checks.
 - Do not make cosmetic changes.
-- Do not add comments, logging, error handling, or type annotations unless the task explicitly asks for them.
+- Do not add comments, logging, defensive error handling, or type annotations unless the task explicitly asks for them.
 - Do not create new files unless the task explicitly requires one.
 - When unsure, leave the code as-is.

@@ -1,0 +1,11 @@
+{
+  "compaction": {
+    "enabled": false
+  },
+  "retry": {
+    "enabled": true,
+    "maxRetries": 2,
+    "baseDelayMs": 1000,
+    "maxDelayMs": 15000
+  }
+}
